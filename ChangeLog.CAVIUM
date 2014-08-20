@@ -1,0 +1,186 @@
+2014-05-05  Andrew Pinski  <apinski@cavium.com>
+
+	* ports/sysdeps/mips/strcmp.c: Copy the one from newlib and use that one
+	as it performes better than the MIPS provided one.
+
+2014-05-05  Manjunath Matti  <mmatti@caviumnetworks.com>
+
+	Bug #9578
+	* ports/sysdeps/unix/sysv/linux/arm/ldd-rewrite.sed: Add /lib/ld-linux-aarch64.so.1
+	/lib/ld-linux-aarch64_ilp32.so.1 /lib/ld-linux-aarch64_be_ilp32.so.1
+	/lib/ld-linux-aarch64_be.so.1 to the RTLDLIST so that a sysroot for both 
+	aarch32 and aarch64 can be combined together.
+
+2014-04-01  Manjunath Matti  <mmatti@caviumnetworks.com>
+
+	Backported :
+	2012-08-22  Roland McGrath  <roland@hack.frob.com>
+
+	* csu/libc-start.c (apply_irel): Move extern declarations inside here.
+	Conditionalize whole body on [IREL].
+
+2014-04-01  Manjunath Matti  <mmatti@caviumnetworks.com>
+
+	Backported :
+	2012-08-21  Roland McGrath  <roland@hack.frob.com>
+
+	* csu/elf-init.c (__libc_csu_irel): Function removed.
+	* csu/libc-start.c (apply_irel): New function.
+	(LIBC_START_MAIN): Call it instead of __libc_csu_irel.
+
+2014-03-27  Andrew Pinski  <apinski@cavium.com>
+
+	* elf/sotruss.ksh: Convert to standard Borne function syntax.
+
+2013-08-16  Manjunath Matti  <mmatti@caviumnetworks.com>
+            Andrew Pinski  <apinski@cavium.com>
+
+	* ports/sysdeps/unix/sysv/linux/arm/configure.in (ldd_rewrite_script): Set.
+	* ports/sysdeps/unix/sysv/linux/arm/configure: Regenerate.
+	* ports/sysdeps/unix/sysv/linux/arm/ldd-rewrite.sed: New file.
+
+2013-05-17  Alexandre Oliva <aoliva@redhat.com>
+
+	From http://sourceware.org/ml/libc-alpha/2013-02/msg00052.html
+	* sysdeps/unix/sysv/linux/ifaddrs.c (__netlink_request): Handle better
+	truncated messages.
+
+2013-04-13  Andrew Pinski  <apinski@cavium.com>
+
+	* ports/sysdeps/unix/sysv/linux/aarch64/configure.in: s/libc_cv_slibdir/slibdir.
+	* ports/sysdeps/unix/sysv/linux/aarch64/configure: Regenerate.
+
+2013-04-13  Andrew Pinski  <apinski@cavium.com>
+
+	* ports/sysdeps/aarch64/fpu/fclrexcpt.c (feclearexcept):
+	Remove libm_hidden_ver.
+
+2013-04-13  Andrew Pinski  <apinski@cavium.com>
+
+	* scripts/config.sub: Update to the latest.
+	* scripts/config.guess: Likewise.
+
+2012-08-29  Andrew Pinski  <apinski@cavium.com>
+
+	* ports/sysdeps/mips/preconfigure: Append octeon3 to the machine
+	variable.
+	* ports/sysdeps/unix/sysv/linux/mips/configure.in: Add Octeon3 support
+	(lib32-fp/lib64-fp).
+	* ports/sysdeps/unix/sysv/linux/mips/configure: Regnerate.
+
+2012-11-16  Andrew Pinski  <apinski@cavium.com>
+
+	Bug #5321
+	* ports/sysdeps/unix/sysv/linux/mips/bits/fcntl.h (F_GETLK64): Fix
+	defintion for N64.
+	(F_SETLK64): Likewise.
+	(F_SETLKW64): Likewise.
+
+2012-11-16  Andrew Pinski  <apinski@cavium.com>
+
+	Revert:
+	2012-10-27  Andrew Pinski  <apinski@cavium.com>
+	Bug #5032
+	* ports/sysdeps/unix/sysv/linux/mips/mips64/n64/fcntl.c: New file.
+
+2012-11-01  Andrew Pinski  <apinski@cavium.com>
+
+	Bug #5086
+	* ports/sysdeps/unix/sysv/linux/mips/nptl/pthread_once.c (__pthread_once):
+	Add release barrier before setting once_control to say
+	initialisation is done. 
+	(clear_once_control): Add release barrier.
+
+2012-10-28  Andrew Pinski  <apinski@cavium.com>
+
+	Bug #5059
+	* ports/sysdeps/mips/sotruss-lib.c: New file.
+
+2012-10-27  Andrew Pinski  <apinski@cavium.com>
+
+	Bug #5032
+	* ports/sysdeps/unix/sysv/linux/mips/mips64/n64/fcntl.c: New file.
+
+2012-10-10  Andrew Pinski  <apinski@cavium.com>
+
+	Bug #4882
+	Revert:
+	2012-07-11  Adam Nemet  <anemet@caviumnetworks.com>
+        * ports/sysdeps/unix/sysv/linux/mips/configure.in: Use it to appe
+        /octeon2 to libdir and slibdir.
+        * ports/sysdeps/unix/sysv/linux/mips/configure: Regenerate.
+
+2012-10-01  Andrew Pinski  <apinski@cavium.com>
+
+	Bug #4796
+	* ports/sysdeps/unix/sysv/linux/arm/bits/wchar.h: New file.
+
+2012-09-14  Andrew Pinski  <apinski@cavium.com>
+
+	* ports/sysdeps/unix/sysv/linux/arm/configure.in: Add the check
+	for hard-float ABI here.
+	The library directory for the soft-float ABI is libsf.
+	* ports/sysdeps/unix/sysv/linux/arm/configure: Regenerate.
+
+2012-09-12  Andrew Pinski  <apinski@cavium.com>
+
+	Bug #4651
+	Port from the add-af-bus branch
+	* socket/sys/bus.h (BUS_DEL_ADDR): New define.
+	(BUS_SET_EAVESDROP): New define.
+	(BUS_UNSET_EAVESDROP): New define.
+
+2012-09-12  Andrew Pinski  <apinski@cavium.com>
+
+	Bug #4651
+	Port from the add-af-bus branch
+	* socket/sys/bus.h (SOL_BUS): New define.
+	* sysdeps/unix/sysv/linux/bits/socket.h (SOL_BUS): Remove.
+
+2012-09-12  Andrew Pinski  <apinski@cavium.com>
+
+	Bug #4651
+	Port from the add-af-bus branch
+	* Makefile (installed-headers): Add socket/sys/bus.h.
+	* include/sys/bus.h: New file.
+	* socket/Makefile (headers): Add sys/bus.h.
+	* socket/sys/bus.h: New file.
+	* socket/sys/socket.h (__SOCKADDR_ALLTYPES): Add sockaddr_bus.
+	* sysdeps/unix/sysv/linux/bits/socket.h (AF_BUS): New define.
+	(PF_MAX): Increment by 1.
+	(AF_BUS): New define.
+	(SOL_BUS): New define.
+
+2012-09-10  Andrew Pinski  <apinski@cavium.com>
+
+	Bug #4632
+	* libio/stdio.h (gets): Declare it for __USE_GNU also.
+
+2012-09-07  Andrew Pinski  <apinski@cavium.com>
+
+	* malloc/malloc.c (_int_free): Fix merge typo with the last patch.
+=======
+>>>>>>> 1f2aacd... 2012-08-29  Andrew Pinski  <apinski@cavium.com>
+
+2012-07-26  Chandrakala Chavva  <cchavva@caviumnetworks.com>
+
+	Patch from NSN
+        * debug/Makefile (CFLAGS-segfault.c): Compile with unwind tables.
+
+2012-07-11  Adam Nemet  <anemet@caviumnetworks.com>
+
+        Bug #1633
+        * include/malloc.h: Add trim to declaration of _int_free.
+        * malloc/malloc.c: Adjust _int_free declaration.
+        (sYSMALLOc, public_fREe, _int_realloc, _int_memalign): Adjust call to
+        _init_free.  Call it non-trimming when freeing old-top in sYSMALLOc.
+        (_int_free): Use new argument trim to decide whether to trim.
+        * malloc/arena.c (free_atfork): Adjust call to _int_free.
+        * malloc/hooks.c (free_check, free_starter): Likewise.
+
+2012-07-11  Adam Nemet  <anemet@caviumnetworks.com>
+            Chandrakala Chavva  <cchavva@caviumnetworks.com>
+
+        * elf/ldd.bash.in: Check for $BASH before invoking bash specific
+        commands.
+

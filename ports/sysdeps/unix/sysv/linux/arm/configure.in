@@ -1,0 +1,42 @@
+GLIBC_PROVIDES dnl See aclocal.m4 in the top level source directory.
+# Local configure fragment for sysdeps/unix/sysv/linux/arm.
+
+arch_minimum_kernel=2.6.16
+libc_cv_gcc_unwind_find_fde=no
+CFLAGS=${CFLAGS% -fno-unwind-tables}
+ldd_rewrite_script=$dir/ldd-rewrite.sed
+
+# We check to see if the compiler and flags are
+# selecting the hard-float ABI and if they are then
+# we set libc_cv_arm_pcs_vfp to yes which causes
+# HAVE_ARM_PCS_VFP to be defined in config.h and
+# in include/libc-symbols.h and thus available to
+# shlib-versions to select the appropriate name for
+# the dynamic linker via %ifdef.
+AC_CACHE_CHECK([whether the compiler is using the ARM hard-float ABI],
+  [libc_cv_arm_pcs_vfp],
+  [AC_EGREP_CPP(yes,[#ifdef __ARM_PCS_VFP
+                      yes
+                     #endif
+  ], libc_cv_arm_pcs_vfp=yes, libc_cv_arm_pcs_vfp=no)])
+
+case "$prefix" in
+/usr | /usr/)
+  # Soft float libraries go in /libsf instead of /lib
+  # Allow earlier configure scripts to handle slibdir, libdir,
+  # and libc_cv_localedir.
+  test -n "$slibdir" || \
+  case $libc_cv_arm_pcs_vfp in
+  no)
+    slibdir="/libsf"
+    if test "$libdir" = '${exec_prefix}/lib'; then
+      libdir='${exec_prefix}/libsf'
+      # Locale data can be shared between soft and hard libraries
+      libc_cv_localedir='${exec_prefix}/lib/locale'
+    fi
+    ;;
+  *)
+    slibdir="/lib"
+    ;;
+  esac
+esac

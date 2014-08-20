@@ -1,0 +1,790 @@
+2014-08-18  Naveen H.S  <Naveen.Hurugalawadi@caviumnetworks.com>
+
+	* include/fenv.h (rm_ctx): Define new struct.
+
+2014-08-07  Wilco Dijkstra  <wdijkstr@arm.com>
+
+	* sysdeps/aarch64/fpu/math_private.h
+	(libc_feholdsetround_noex_aarch64_ctx): New function.
+
+2014-07-31  Andrew Pinski  <apinski@cavium.com>
+
+	Bug #11652
+	* sysdeps/unix/sysv/linux/aarch64/sysdep.c (__syscall_error): Use __syscall_slong_t
+	instead of long type so this work correctly on ILP32.
+
+2014-06-23  Andrew Pinski  <apinski@cavium.com>
+
+	* sysdeps/unix/sysv/linux/aarch64/sysdep.h (ARGIFY):
+	Rewrite again but this time zero extend for pointers.
+
+2014-06-12  Andrew Pinski  <apinski@cavium.com>
+
+	* sysdeps/unix/sysv/linux/aarch64/ilp32/semctl.c: New file.
+
+2014-06-12  Andrew Pinski  <apinski@cavium.com>
+
+	* sysdeps/unix/sysv/linux/aarch64/sysdep.h (ARGIFY): Rewrite
+	so it does not truncate already 64bit values.
+
+2014-06-03  Wilco  <wdijkstr@arm.com>
+ 
+	* sysdeps/aarch64/fpu/math_private.h (libc_fesetround_aarch64)
+	(libc_feholdexcept_setround_aarch64) (libc_feholdsetround_aarch64)
+	(libc_feresetround_aarch64) (libc_feholdsetround_aarch64_ctx):
+	Use _FPU_FPCR_RM_MASK for rounding mask rather than FE_TOWARDZERO.
+	* sysdeps/aarch64/fpu/get-rounding-mode.h (get_rounding_mode):
+	Likewise.
+
+2014-06-03  Wilco  <wdijkstr@arm.com>
+
+	* sysdeps/aarch64/fpu/math_private.h
+	(libc_feholdexcept_aarch64) (libc_feholdexcept_setround_aarch64)
+	(libc_fetestexcept_aarch64) (libc_fesetenv_aarch64)
+	(libc_feupdateenv_test_aarch64) (libc_feholdsetround_aarch64)
+	(libc_feresetround_aarch64) (libc_feholdsetround_aarch64_ctx):
+	Fix declarations.
+
+2014-05-20  Will Newton  <will.newton@linaro.org>
+	    Yvan Roux  <yvan.roux@linaro.org>
+
+	* sysdeps/unix/sysv/linux/aarch64/sys/user.h: Remove unused
+	#include of asm/ptrace.h.
+	(PTRACE_GET_THREAD_AREA): Remove #undef.
+	(PTRACE_GETHBPREGS): Likewise.
+	(PTRACE_SETHBPREGS): Likewise.
+	(struct user_regs_struct): New structure.
+	(struct user_fpsimd_struct): New structure.
+	* sysdeps/unix/sysv/linux/aarch64/sys/procfs.h: Remove unused
+	#include of asm/ptrace.h and second #include of sys/user.h.
+	(PTRACE_GET_THREAD_AREA): Remove #undef.
+	(PTRACE_GETHBPREGS): Likewise.
+	(PTRACE_SETHBPREGS): Likewise.
+	(ELF_NGREG): Use new struct user_regs_struct.
+	(elf_fpregset_t): Use new struct user_fpsimd_struct.
+
+2014-04-30  Andrew Pinski  <apinski@cavium.com>
+
+	* sysdeps/unix/sysv/linux/aarch64/bits/sigstack.h: New file.
+
+2014-04-30  Andrew Pinski  <apinski@cavium.com>
+
+	* sysdeps/unix/sysv/linux/aarch64/sys/ucontext.h (struct ucontext): Fix the
+	names of the pad fields.
+
+2014-04-29  Andrew Pinski  <apinski@cavium.com>
+
+	* misc/sys/select.h (__FD_MASK_TYPE): Define.
+	(__fd_mask): Change the typedef to be based on __FD_MASK_TYPE.
+	* sysdeps/unix/sysv/linux/aarch64/bits/typesizes.h (__FD_MASK_TYPE): Define
+	to __SYSCALL_SLONG_TYPE.
+
+2014-04-27  Andrew Pinski  <apinski@cavium.com>
+
+	Bug #10393
+	* sysdeps/unix/sysv/linux/aarch64/sigaction.c: Fix copyright header.
+	(__libc_sigaction): Handle kernel_sigaction where the fields are
+	unsigned long long in type so that ILP32 structure layout exactly
+	matches LP64's.
+	Also the syscall will never return ENOSYS so delete that part of the code.
+	* sysdeps/unix/sysv/linux/aarch64/kernel_sigaction.h: New header.
+
+2014-04-24  Ian Bolton  <ian.bolton@arm.com>
+
+	* sysdeps/aarch64/fpu/fclrexcpt.c (feclearexcept): Don't write to
+	fpsr if value didn't change.
+	* sysdeps/aarch64/fpu/fedisblxcpt.c (fedisableexcept): Don't write
+	to fpcr if value didn't change.
+	* sysdeps/aarch64/fpu/feenablxcpt.c (feenableexcept): Likewise.
+	* sysdeps/aarch64/fpu/feholdexcpt.c (feholdexcept): Don't write to
+	fpsr or fpcr if value didn't change.
+	* sysdeps/aarch64/fpu/fesetenv.c (fesetenv): Likewise.
+	* sysdeps/aarch64/fpu/fesetround.c (fesetround): Don't write to
+	fpcr if value didn't change.
+	* sysdeps/aarch64/fpu/fsetexcptflg.c (fesetexceptflag): Don't write
+	to fpsr if value didn't change.
+
+2014-04-24  Andrew Pinski  <apinski@cavium.com>
+
+	Bug #7887
+	* ports/sysdeps/unix/sysv/linux/generic/bits/shm.h (__SHMID_DS_SIZE_TYPE): Define.
+	(struct shmid_ds): Use __SHMID_DS_SIZE_TYPE for shm_segsz instead of __syscall_ulong_t.
+	* sysdeps/unix/sysv/linux/aarch64/bits/typesizes.h (__SIGINFO_INNER): Define.
+	(__RUSAGE_LONG): Redefine using __SIGINFO_INNER.
+	(__SIZE_T_NEEDS_PAD_BEFORE_SHMID_DS): Delete.
+	(__SHMID_DS_SIZE_TYPE): Define.
+	(__SIGINFO_VOIDPOINTER): Define.
+	(__SIGINFO_BAND): Define.
+	(__SI_PAD_SIZE): Define.
+	* sysdeps/unix/sysv/linux/bits/siginfo.h (__SIGINFO_VOIDPOINTER): Define.
+	(__SIGINFO_BAND): Define.
+	(union sigval): Use __SIGINFO_VOIDPOINTER for sival_ptr.
+	(__SI_PAD_SIZE): Only define if not already defined.
+	(struct siginfo): Use __SIGINFO_VOIDPOINTER for si_addr.
+	Use __SIGINFO_BAND for si_band.
+
+2014-04-22  Yufeng Zhang  <yufeng.zhang@arm.com>
+
+	* stdlib/longlong.h (count_leading_zeros, count_trailing_zeros)
+	(COUNT_LEADING_ZEROS_0): Define for AArch64.
+
+2014-04-22  Will Newton  <will.newton@linaro.org>
+	    Venkataramanan Kumar  <venkataramanan.kumar@linaro.org>
+
+	* sysdeps/aarch64/__longjmp.S: Include stap-probe.h.
+	(__longjmp): Add longjmp and longjmp_target SystemTap
+	probes.
+	* sysdeps/aarch64/setjmp.S: Include stap-probe.h.
+	(__sigsetjmp): Add setjmp SystemTap probe.
+
+2014-04-17  Ian Bolton  <ian.bolton@arm.com>
+	    Wilco Dijkstra  <wilco.dijkstra@arm.com>
+
+	* sysdeps/aarch64/fpu/math_private.h (HAVE_RM_CTX)
+	(libc_feholdsetround_aarch64_ctx)
+	(libc_feholdsetround_ctx, libc_feholdsetroundf_ctx)
+	(libc_feholdsetroundl_ctx, libc_feresetround_aarch64_ctx)
+	(libc_feresetround_ctx, libc_feresetroundf_ctx)
+	(libc_feresetroundl_ctx, libc_feresetround_noex_aarch64_ctx)
+	(libc_feresetround_noex_ctx, libc_feresetround_noexf_ctx)
+	(libc_feresetround_noexl_ctx): Define.
+
+2014-04-17  Ian Bolton  <ian.bolton@arm.com>
+
+	* sysdeps/aarch64/math-tests.h: New file.
+
+2014-04-17  Will Newton  <will.newton@linaro.org>
+ 
+ 	[BZ #16629]
+	* stdlib/tst-setcontext.c: Include signal.h.
+	(main): Check that the signal stack before and
+	after swapcontext is the same.
+
+2014-04-17  Will Newton  <will.newton@linaro.org>
+
+	[BZ #16629]
+	* sysdeps/unix/sysv/linux/aarch64/setcontext.S (__setcontext):
+	Re-implement to restore registers in user code and avoid
+	rt_sigreturn system call.
+
+2014-04-16  Ian Bolton  <ian.bolton@arm.com>
+	    Wilco Dijkstra  <wilco.dijkstra@arm.com>
+
+	* sysdeps/aarch64/fpu/math_private.h: New file.
+
+2014-04-16  Marcus Shawcroft  <marcus.shawcroft@arm.com>
+
+	* sysdeps/aarch64/libm-test-ulps: Regenerate.
+
+2014-04-18  Andrew Pinski  <apinski@cavium.com>
+
+	* sysdeps/unix/sysv/linux/aarch64/ilp32/dl-fxstatat64.c: New file.
+
+2014-04-18  Andrew Pinski  <apinski@cavium.com>
+
+	* sysdeps/unix/sysv/linux/aarch64/sigcontextinfo.h: Add include of stdint.h.
+
+2014-04-18  Andrew Pinski  <apinski@cavium.com>
+
+	* sysdeps/aarch64/jmpbuf-unwind.h (_JMPBUF_CFA_UNWINDS_ADJ): Add cast to
+	_Unwind_Ptr before casting to void*.
+
+2014-04-18  Andrew Pinski  <apinski@cavium.com>
+
+	* sysdeps/unix/sysv/linux/aarch64/sigcontextinfo.h (GET_PC): Add a cast to
+	uintptr_t before casting to void* to avoid warning with ILP32.
+
+2014-04-18  Andrew Pinski  <apinski@cavium.com>
+
+	* sysdeps/aarch64/bits/wordsize.h (__WORDSIZE_TIME64_COMPAT32): Define
+	unconditionally.
+
+2014-04-18  Andrew Pinski  <apinski@cavium.com>
+
+	* sysdeps/unix/sysv/linux/aarch64/ilp32/posix_fadvise64.c: New file.
+
+2014-04-18  Andrew Pinski  <apinski@cavium.com>
+
+	* sysdeps/unix/sysv/linux/aarch64/bits/sigset.h: New file.
+	* sysdeps/unix/sysv/linux/bits/sigset.h (__sigset_inner_t): New typedef.
+	* sysdeps/unix/sysv/linux/sigset-cvt-mask.h (sigset_set_old_mask): Use
+	__sigset_inner_t instead of unsigned long int.
+
+2014-04-11  Andrew Pinski  <apinski@cavium.com>
+
+	Bug #10170
+	* sysdeps/unix/sysv/linux/aarch64/ilp32/Versions: New file.
+
+2014-04-08  Andrew Pinski  <apinski@cavium.com>
+
+	* ports/sysdeps/unix/sysv/linux/generic/kernel_stat.h (XSTAT_IS_XSTAT64): Define also
+	if __STATFS_MATCHES_STATFS64_TYPE is defined.
+	* sysdeps/unix/sysv/linux/aarch64/ilp32/fxstat.c: New file
+	* sysdeps/unix/sysv/linux/aarch64/ilp32/fxstat64.c: New file
+	* sysdeps/unix/sysv/linux/aarch64/ilp32/fxstatat.c: New file
+	* sysdeps/unix/sysv/linux/aarch64/ilp32/fxstatat64.c: New file
+	* sysdeps/unix/sysv/linux/aarch64/ilp32/llseek.c: New file
+	* sysdeps/unix/sysv/linux/aarch64/ilp32/lxstat64.c: New file
+	* sysdeps/unix/sysv/linux/aarch64/ilp32/xstat.c: New file
+	* sysdeps/unix/sysv/linux/aarch64/ilp32/xstat64.c: New file
+	* sysdeps/unix/sysv/linux/aarch64/ilp32/Implies: Remove wordsize-32.
+	* sysdeps/unix/sysv/linux/aarch64/ilp32/syscalls.list (truncate): Change syscall name
+	to truncate.
+	(ftruncate): Change syscall name to ftruncate.
+	(sendfile): Change syscall name to sendfile.
+	(llseek): Delete.
+	(lseek): Change to be the default one.
+	(mmap): Change syscall name to mmap.
+	(posix_fadvise): fadvise64.
+	(fstatfs): Change syscall name to fstatfs.
+	(statfs): Change syscall name to statfs.
+	(fanotify_mark): Add.
+
+2014-04-04  Andrew Pinski  <apinski@cavium.com>
+
+	* sysdeps/unix/sysv/linux/aarch64/ilp32/syscalls.list (fstatfs): New.
+	(statfs): New.
+	* sysdeps/unix/sysv/linux/aarch64/ilp32/statvfs.c: New file.
+	* sysdeps/unix/sysv/linux/aarch64/ilp32/statvfs64.c: New file.
+	* sysdeps/unix/sysv/linux/aarch64/ilp32/fstatfs64.c: New file.
+	* sysdeps/unix/sysv/linux/aarch64/ilp32/statfs64.c: New file.
+
+2014-04-04  Andrew Pinski  <apinski@cavium.com>
+
+	* sysdeps/unix/sysv/linux/aarch64/ilp32/syscalls.list (posix_fadvise): Add.
+
+2014-04-03  Andrew Pinski  <apinski@cavium.com>
+
+	* sysdeps/unix/sysv/linux/aarch64/ilp32/mmap64.c: New file.
+	* sysdeps/unix/sysv/linux/aarch64/ilp32/syscalls.list (mmap): Add for now until mmap2 gets renamed to mmap.
+	Add other FIXME comments about the other system calls which will be renamed.
+
+2014-04-01  Andrew Pinski  <apinski@cavium.com>
+
+	* sysdeps/unix/sysv/linux/aarch64/ilp32/fallocate.c: New file.
+	* sysdeps/unix/sysv/linux/aarch64/ilp32/fallocate64.c: New file.
+	* sysdeps/unix/sysv/linux/aarch64/ilp32/posix_fallocate.c: New file.
+	* sysdeps/unix/sysv/linux/aarch64/ilp32/posix_fallocate64.c: New file.
+
+2014-03-29  Andrew Pinski  <apinski@cavium.com>
+
+	Bug #9988
+	* elf/elf.h (R_AARCH64_P32_IRELATIVE): Define.
+	* dl-irel.h: Include sysdep.h
+	(elf_irela): Support ILP32 version of IRELATIVE.
+	* dl-machine.h (AARCH64_R): Delete.
+	(elf_machine_rela): Support ILP32 version of IRELATIVE.
+	(elf_machine_lazy_rel): Likewise.
+	* sysdeps/aarch64/sysdep.h: Add include header guards.
+	(AARCH64_R): Define.
+
+2014-03-29  Andrew Pinski  <apinski@cavium.com>
+
+	Bug #9986
+	* sysdeps/aarch64/dl-trampoline.S (ip0l): New macro.
+	(_dl_runtime_profile): Fix up loading of the new frame size.
+
+2014-03-28  Andrew Pinski  <apinski@cavium.com>
+
+	* sysdeps/aarch64/nptl/tls.h (TLS_INIT_TCB_ALIGN): Define based on pthread instead.
+	(TLS_TCB_ALIGN): Likewise.
+
+2014-03-24  Andrew Pinski  <apinski@cavium.com>
+
+	Bug #9579
+	* ports/sysdeps/unix/sysv/linux/aarch64/ldd-rewrite.sed: Add /lib/ld-linux-armhf.so.3 to the
+	RTLDLIST so that a sysroot for both aarch32 and aarch64 can be combined together.
+
+2014-03-24  Andrew Pinski  <apinski@cavium.com>
+
+	* ports/sysdeps/unix/sysv/linux/aarch64/ldd-rewrite.sed: Fix for the new names of ld.so.
+
+2014-03-18  Will Newton  <will.newton@linaro.org>
+
+	* sysdeps/unix/sysv/linux/aarch64/sysdep.h: Remove
+	inaccurate comment.
+
+2014-03-17  Andrew Pinski  <apinski@cavium.com>
+
+	* ports/sysdeps/unix/sysv/linux/generic/bits/shm.h (shmid_ds): Change size_t to be
+	__syscall_ulong_t.
+
+2014-03-17  Andrew Pinski  <apinski@cavium.com>
+
+	* sysdeps/unix/sysv/linux/aarch64/ilp32/syscalls.list (sync_file_range): Add.
+
+2014-03-17  Andrew Pinski  <apinski@cavium.com>
+
+	* sysdeps/unix/sysv/linux/aarch64/ilp32/syscalls.list (prlimit): Add.
+
+2014-03-15  Andrew Pinski  <apinski@cavium.com>
+
+	* sysdeps/unix/sysv/linux/aarch64/ilp32/syscalls.list (llseek): Add.
+	(lseek): Add.
+
+2014-03-15  Andrew Pinski  <apinski@cavium.com>
+
+	* sysdeps/unix/sysv/linux/aarch64/ilp32/getdents.c: New file.
+	* sysdeps/unix/sysv/linux/aarch64/ilp32/getdents64.c: New file.
+
+2014-03-15  Andrew Pinski  <apinski@cavium.com>
+
+	* ports/sysdeps/unix/sysv/linux/generic/bits/stat.h (__field64):
+	Handle the case where __OFF_T_MATCHES_OFF64_T, __INO_T_MATCHES_INO64_T,
+	and __FSBLKCNT_T_TYPE_MATCHES_FSBLKCNT64_T_TYPE are all true.
+	* ports/sysdeps/unix/sysv/linux/generic/bits/statfs.h (__field64):
+	Handle __STATFS_MATCHES_STATFS64_TYPE case.
+	* ports/sysdeps/unix/sysv/linux/generic/getdents64.c (__getdents):
+	Also alias when __OFF_T_MATCHES_OFF64_T and __INO_T_MATCHES_INO64_T
+	are defined.
+	* ports/sysdeps/unix/sysv/linux/generic/wordsize-32/overflow.h (stat_overflow):
+	Return 0 when __OFF_T_MATCHES_OFF64_T, __INO_T_MATCHES_INO64_T and
+	__FSBLKCNT_T_TYPE_MATCHES_FSBLKCNT64_T_TYPE are all 1.
+	(statfs_overflow): Return 0 when __STATFS_MATCHES_STATFS64_TYPE is true.
+	* sysdeps/unix/sysv/linux/aarch64/bits/typesizes.h: Fix so types are using
+	the syscall long type when needed.
+	(__INO_T_MATCHES_INO64_T): Define.
+	(__FSBLKCNT_T_TYPE_MATCHES_FSBLKCNT64_T_TYPE): Define.
+	(__STATFS_MATCHES_STATFS64_TYPE): Define.
+
+2014-03-13  Andrew Pinski  <apinski@cavium.com>
+
+	* sysdeps/unix/sysv/linux/aarch64/bits/typesizes.h
+	(__OFF_T_MATCHES_OFF64_T): Define to true always.
+
+2014-03-13  Andrew Pinski  <apinski@cavium.com>
+
+	* sysdeps/unix/sysv/linux/aarch64/ilp32/sendfile64.c: New file.
+	* sysdeps/unix/sysv/linux/aarch64/ilp32/syscalls.list (sendfile): Add.
+
+2014-03-12  Andrew Pinski  <apinski@cavium.com>
+
+	* sysdeps/unix/sysv/linux/aarch64/ilp32/getrlimit64.c: New file.
+	* sysdeps/unix/sysv/linux/aarch64/ilp32/setrlimit64.c: New file.
+	* sysdeps/unix/sysv/linux/aarch64/bits/typesizes.h (__RLIM_T_TYPE): Change to be
+	__SYSCALL_ULONG_TYPE.
+	* sysdeps/unix/sysv/linux/aarch64/ilp32/syscalls.list (readahead): Add.
+	(getrlimit): Add.
+	(setrlimit): Add.
+
+2014-03-12  Andrew Pinski  <apinski@cavium.com>
+
+	* sysdeps/unix/sysv/linux/aarch64/ilp32/pread64.c: New file.
+	* sysdeps/unix/sysv/linux/aarch64/ilp32/pwrite64.c: New file.
+	* sysdeps/unix/sysv/linux/aarch64/ilp32/syscalls.list (pread): Add
+	(pwrite): Add.
+
+2014-03-11  Andrew Pinski  <apinski@cavium.com>
+
+	* sysdeps/unix/sysv/linux/aarch64/ilp32/preadv64.c: New file.
+	* sysdeps/unix/sysv/linux/aarch64/ilp32/pwritev64.c: New file.
+	* sysdeps/unix/sysv/linux/aarch64/ilp32/syscalls.list (pwritev): Add.
+	(preadv): Add.
+
+2014-03-11  Andrew Pinski  <apinski@cavium.com>
+
+	* ports/sysdeps/unix/sysv/linux/aarch64/bits/typesizes.h (__OFF_T_TYPE): Define to be
+	__SYSCALL_SLONG_TYPE.
+
+2014-03-10  Andrew Pinski  <apinski@cavium.com>
+
+	* ports/sysdeps/unix/sysv/linux/aarch64/ilp32/ftruncate64.c: New file.
+	* ports/sysdeps/unix/sysv/linux/aarch64/ilp32/syscalls.list: New file.
+	* ports/sysdeps/unix/sysv/linux/aarch64/ilp32/truncate64.c: New file.
+
+2014-03-07  Marcus Shawcroft  <marcus.shawcroft@arm.com>
+
+	* sysdeps/aarch64/fpu/feenablxcpt.c (feenableexcept): Detect and
+	error absence of trapping exception support.
+	* sysdeps/aarch64/fpu/fesetenv.c (fesetenv): Likewise.
+
+2014-02-24  Andrew Pinski  <apinski@cavium.com>
+
+	* ports/sysdeps/unix/sysv/linux/aarch64/bits/typesizes.h (__SSIZE_T_TYPE):
+	Fix to be always signed long.
+
+2014-02-11  Marcus Shawcroft  <marcus.shawcroft@arm.com>
+
+       * sysdeps/aarch64: Move directory from ports/sysdeps/aarch64.
+       * sysdeps/unix/sysv/linux/aarch64: Move directory from
+       ports/sysdeps/unix/sysv/linux/aarch64.
+       * README: Update listing for aarch64*-*-linux-gnu.
+
+2014-02-07  Andrew Pinski  <apinski@cavium.com>
+
+	* ports/sysdeps/unix/sysv/linux/aarch64/configure: Regenerate.
+	* ports/sysdeps/unix/sysv/linux/aarch64/configure.in: s/lib32/libilp32/.
+	* ports/sysdeps/unix/sysv/linux/aarch64/dl-cache.h (add_system_dir):
+	Change handling of lib32 to handling of libilp32.
+
+2014-01-24  Andrew Pinski  <apinski@cavium.com>
+
+	* ports/sysdeps/aarch64/shlib-versions: Rename ld-linux32-aarch64_be.so.1
+	to ld-linux-aarch64_be_ilp32.so.1 and ld-linux32-aarch64.so.1 to
+	ld-linux-aarch64_ilp32.so.1.
+	* ports/sysdeps/unix/sysv/linux/aarch64/Makefile: Likewise.
+	* ports/sysdeps/unix/sysv/linux/aarch64/ldconfig.h: Likewise.
+
+2014-01-20  Marcus Shawcroft  <marcus.shawcroft@linaro.org>
+            Naveen H.S  <Naveen.Hurugalawadi@caviumnetworks.com>
+            Andrew Pinski  <apinski@cavium.com>
+
+	* sysdeps/aarch64/shlib-versions: Define ld-linux-aarch64_be.so.1
+	and ld-linux32-aarch64_be.so.1.
+	* ports/sysdeps/unix/sysv/linux/aarch64/configure.in:
+	Add check for big-endian.  Create a new default-abi.make file.
+	* ports/sysdeps/unix/sysv/linux/aarch64/configure: Regenerate.
+	* sysdeps/unix/sysv/linux/aarch64/Makefile:
+	Include $(common-objpfx)default-abi.make for the default-abi.
+	(abi-variants): Include lp64_be and ilp32_be.
+	(abi-lp64-options, abi-lp64-condition, abi-lp64-ld-soname)
+	(abi-lp64_be-options, abi-lp64_be-condition)
+	(abi-lp64_be-ld-soname): Define.
+	(abi-ilp32-options, abi-ilp32-condition, abi-ilp32-ld-soname)
+	(abi-ilp32_be-options, abi-ilp32_be-condition)
+	(abi-ilp32_be-ld-soname): Define.
+	* sysdeps/unix/sysv/linux/aarch64/ldconfig.h
+	(SYSDEP_KNOWN_INTERPRETER_NAMES): Add ld-linux-aarch64_be.so.1
+	and ld-linux32-aarch64_be.so.1.
+	* ports/sysdeps/unix/sysv/linux/aarch64/lp64/Makefile: Delete.
+	* ports/sysdeps/unix/sysv/linux/aarch64/ilp32/Makefile: Delete.
+
+2014-01-06  Andrew Pinski  <apinski@cavium.com>
+
+	* ports/sysdeps/aarch64/dl-trampoline.S (_dl_runtime_resolve): Fix up first
+	cfi_adjust_cfa_offset to be correct.
+	Also fix up the location of &PLTGOT[n] which is now 80+8*16.
+
+2013-11-20  Andrew Pinski  <apinski@cavium.com>
+
+	* ports/sysdeps/unix/sysv/linux/aarch64/bits/typesizes.h (__SI_ALIGNMENT):
+	Define for ILP32.
+	(__SIGCHLD_CLOCK_T): Likewise.
+	* sysdeps/unix/sysv/linux/bits/siginfo.h (__SI_ALIGNMENT): Define to empty if
+	not defined.
+	(__SIGCHLD_CLOCK_T): Define to __CLOCK_T_TYPE if not defined.
+	(__sigchld_clock_t): New typedef.
+	(siginfo_t): Use __sigchld_clock_t instead of __clock_t and add __SI_ALIGNMENT
+	to the end.
+
+2013-09-30  Petr Machata  <pmachata@redhat.com>
+
+	* elf/elf.h (R_AARCH64_ABS16): New macro.
+	(R_AARCH64_PREL64, R_AARCH64_PREL32): Likewise.
+	(R_AARCH64_PREL16, R_AARCH64_MOVW_UABS_G0): Likewise.
+	(R_AARCH64_MOVW_UABS_G0_NC, R_AARCH64_MOVW_UABS_G1): Likewise.
+	(R_AARCH64_MOVW_UABS_G1_NC, R_AARCH64_MOVW_UABS_G2): Likewise.
+	(R_AARCH64_MOVW_UABS_G2_NC, R_AARCH64_MOVW_UABS_G3): Likewise.
+	(R_AARCH64_MOVW_SABS_G0, R_AARCH64_MOVW_SABS_G1): Likewise.
+	(R_AARCH64_MOVW_SABS_G2, R_AARCH64_LD_PREL_LO19): Likewise.
+	(R_AARCH64_ADR_PREL_LO21, R_AARCH64_ADR_PREL_PG_HI21): Likewise.
+	(R_AARCH64_ADR_PREL_PG_HI21_NC, R_AARCH64_ADD_ABS_LO12_NC): Likewise.
+	(R_AARCH64_LDST8_ABS_LO12_NC, R_AARCH64_LDST16_ABS_LO12_NC): Likewise.
+	(R_AARCH64_LDST32_ABS_LO12_NC, R_AARCH64_LDST64_ABS_LO12_NC): Likewise.
+	(R_AARCH64_LDST128_ABS_LO12_NC, R_AARCH64_TSTBR14): Likewise.
+	(R_AARCH64_CONDBR19, R_AARCH64_JUMP26, R_AARCH64_CALL26): Likewise.
+	(R_AARCH64_MOVW_PREL_G0, R_AARCH64_MOVW_PREL_G0_NC): Likewise.
+	(R_AARCH64_MOVW_PREL_G1, R_AARCH64_MOVW_PREL_G1_NC): Likewise.
+	(R_AARCH64_MOVW_PREL_G2, R_AARCH64_MOVW_PREL_G2_NC): Likewise.
+	(R_AARCH64_MOVW_PREL_G3, R_AARCH64_MOVW_GOTOFF_G0): Likewise.
+	(R_AARCH64_MOVW_GOTOFF_G0_NC, R_AARCH64_MOVW_GOTOFF_G1): Likewise.
+	(R_AARCH64_MOVW_GOTOFF_G1_NC, R_AARCH64_MOVW_GOTOFF_G2): Likewise.
+	(R_AARCH64_MOVW_GOTOFF_G2_NC, R_AARCH64_MOVW_GOTOFF_G3): Likewise.
+	(R_AARCH64_GOTREL64, R_AARCH64_GOTREL32): Likewise.
+	(R_AARCH64_GOT_LD_PREL19, R_AARCH64_LD64_GOTOFF_LO15): Likewise.
+	(R_AARCH64_ADR_GOT_PAGE, R_AARCH64_LD64_GOT_LO12_NC): Likewise.
+	(R_AARCH64_LD64_GOTPAGE_LO15, R_AARCH64_TLSGD_ADR_PREL21): Likewise.
+	(R_AARCH64_TLSGD_ADR_PAGE21, R_AARCH64_TLSGD_ADD_LO12_NC): Likewise.
+	(R_AARCH64_TLSGD_MOVW_G1, R_AARCH64_TLSGD_MOVW_G0_NC): Likewise.
+	(R_AARCH64_TLSLD_ADR_PREL21, R_AARCH64_TLSLD_ADR_PAGE21): Likewise.
+	(R_AARCH64_TLSLD_ADD_LO12_NC, R_AARCH64_TLSLD_MOVW_G1): Likewise.
+	(R_AARCH64_TLSLD_MOVW_G0_NC, R_AARCH64_TLSLD_LD_PREL19): Likewise.
+	(R_AARCH64_TLSLD_MOVW_DTPREL_G2): Likewise.
+	(R_AARCH64_TLSLD_MOVW_DTPREL_G1): Likewise.
+	(R_AARCH64_TLSLD_MOVW_DTPREL_G1_NC): Likewise.
+	(R_AARCH64_TLSLD_MOVW_DTPREL_G0): Likewise.
+	(R_AARCH64_TLSLD_MOVW_DTPREL_G0_NC): Likewise.
+	(R_AARCH64_TLSLD_ADD_DTPREL_HI12): Likewise.
+	(R_AARCH64_TLSLD_ADD_DTPREL_LO12): Likewise.
+	(R_AARCH64_TLSLD_ADD_DTPREL_LO12_NC): Likewise.
+	(R_AARCH64_TLSLD_LDST8_DTPREL_LO12): Likewise.
+	(R_AARCH64_TLSLD_LDST8_DTPREL_LO12_NC): Likewise.
+	(R_AARCH64_TLSLD_LDST16_DTPREL_LO12): Likewise.
+	(R_AARCH64_TLSLD_LDST16_DTPREL_LO12_NC): Likewise.
+	(R_AARCH64_TLSLD_LDST32_DTPREL_LO12): Likewise.
+	(R_AARCH64_TLSLD_LDST32_DTPREL_LO12_NC): Likewise.
+	(R_AARCH64_TLSLD_LDST64_DTPREL_LO12): Likewise.
+	(R_AARCH64_TLSLD_LDST64_DTPREL_LO12_NC): Likewise.
+	(R_AARCH64_TLSLD_LDST128_DTPREL_LO12): Likewise.
+	(R_AARCH64_TLSLD_LDST128_DTPREL_LO12_NC): Likewise.
+	(R_AARCH64_TLSIE_MOVW_GOTTPREL_G1): Likewise.
+	(R_AARCH64_TLSIE_MOVW_GOTTPREL_G0_NC): Likewise.
+	(R_AARCH64_TLSIE_ADR_GOTTPREL_PAGE21): Likewise.
+	(R_AARCH64_TLSIE_LD64_GOTTPREL_LO12_NC): Likewise.
+	(R_AARCH64_TLSIE_LD_GOTTPREL_PREL19): Likewise.
+	(R_AARCH64_TLSLE_MOVW_TPREL_G2): Likewise.
+	(R_AARCH64_TLSLE_MOVW_TPREL_G1): Likewise.
+	(R_AARCH64_TLSLE_MOVW_TPREL_G1_NC): Likewise.
+	(R_AARCH64_TLSLE_MOVW_TPREL_G0): Likewise.
+	(R_AARCH64_TLSLE_MOVW_TPREL_G0_NC): Likewise.
+	(R_AARCH64_TLSLE_ADD_TPREL_HI12): Likewise.
+	(R_AARCH64_TLSLE_ADD_TPREL_LO12): Likewise.
+	(R_AARCH64_TLSLE_ADD_TPREL_LO12_NC): Likewise.
+	(R_AARCH64_TLSLE_LDST8_TPREL_LO12): Likewise.
+	(R_AARCH64_TLSLE_LDST8_TPREL_LO12_NC): Likewise.
+	(R_AARCH64_TLSLE_LDST16_TPREL_LO12): Likewise.
+	(R_AARCH64_TLSLE_LDST16_TPREL_LO12_NC): Likewise.
+	(R_AARCH64_TLSLE_LDST32_TPREL_LO12): Likewise.
+	(R_AARCH64_TLSLE_LDST32_TPREL_LO12_NC): Likewise.
+	(R_AARCH64_TLSLE_LDST64_TPREL_LO12): Likewise.
+	(R_AARCH64_TLSLE_LDST64_TPREL_LO12_NC): Likewise.
+	(R_AARCH64_TLSLE_LDST128_TPREL_LO12): Likewise.
+	(R_AARCH64_TLSLE_LDST128_TPREL_LO12_NC): Likewise.
+	(R_AARCH64_TLSDESC_LD_PREL19): Likewise.
+	(R_AARCH64_TLSDESC_ADR_PREL21): Likewise.
+	(R_AARCH64_TLSDESC_ADR_PAGE21): Likewise.
+	(R_AARCH64_TLSDESC_LD64_LO12): Likewise.
+	(R_AARCH64_TLSDESC_ADD_LO12): Likewise.
+	(R_AARCH64_TLSDESC_OFF_G1): Likewise.
+	(R_AARCH64_TLSDESC_OFF_G0_NC): Likewise.
+	(R_AARCH64_TLSDESC_LDR): Likewise.
+	(R_AARCH64_TLSDESC_ADD): Likewise.
+	(R_AARCH64_TLSDESC_CALL): Likewise.
+
+2013-09-10  Andrew Pinski  <apinski@cavium.com>
+
+	Bug #7865
+	* ports/sysdeps/unix/sysv/linux/aarch64/sysdep.h (__local_syscall_error):
+	Fix the store to errno so it is a word (32bit) store.
+
+2013-08-18  Andrew Pinski  <apinski@cavium.com>
+
+	* elf/cache.c (print_entry): Handle FLAG_AARCH64_LIB32.
+	* ports/sysdeps/unix/sysv/linux/aarch64/dl-cache.h (_DL_CACHE_DEFAULT_ID):
+	Define for ILP32 to include FLAG_AARCH64_LIB32.
+	(add_system_dir): Add lib32 also.
+	* ports/sysdeps/unix/sysv/linux/arm/readelflib.c (process_elf_file):
+	Handle ILP32 binaries.
+	* sysdeps/generic/ldconfig.h (FLAG_AARCH64_LIB32): Define.
+
+2013-08-18  Andrew Pinski  <apinski@cavium.com>
+
+	* ports/sysdeps/unix/sysv/linux/generic/bits/shm.h (struct shmid_ds):
+	Fix typo.
+
+2013-08-16  Andrew Pinski  <apinski@cavium.com>
+
+	* ports/sysdeps/unix/sysv/linux/aarch64/ldd-rewrite.sed: New file.
+	* ports/sysdeps/unix/sysv/linux/aarch64/configure.in (ldd_rewrite_script): Set.
+	* ports/sysdeps/unix/sysv/linux/aarch64/configure: Regenerate.
+
+2013-08-16  Andrew Pinski  <apinski@cavium.com>
+
+	* ports/sysdeps/unix/sysv/linux/generic/bits/shm.h (struct shmid_ds):
+	Add padding before shm_segsz if requested.
+	* ports/sysdeps/unix/sysv/linux/aarch64/bits/typesizes.h
+	(__SIZE_T_NEEDS_PAD_BEFORE_SHMID_DS): Define.
+
+2013-08-11  Andrew Pinski  <apinski@cavium.com>
+
+	* ports/sysdeps/unix/sysv/linux/aarch64/bits/typesizes.h (__FSWORD_T_TYPE): Change to
+	be __SYSCALL_SLONG_TYPE.
+	* ports/sysdeps/unix/sysv/linux/generic/bits/statfs.h (statfs): Update to use __fsword_t.
+	(statfs64): Likewise.
+
+2013-08-10  Andrew Pinski  <apinski@cavium.com>
+
+	* ports/sysdeps/unix/sysv/linux/aarch64/bits/typesizes.h (__TIME_T_64_BITS): New define.
+	* ports/sysdeps/unix/sysv/linux/generic/bits/msq.h (msgqnum_t): Change to __syscall_ulong_t.
+	(msglen_t): Likewise.
+	(__TIME_T_64_BITS): Define if we are not already defined or wordsize is 64.
+	(struct msqid_ds): Update #if's to use __TIME_T_64_BITS.
+	Use __syscall_ulong_t instead of unsigned long.
+	* ports/sysdeps/unix/sysv/linux/generic/bits/sem.h
+	(__TIME_T_64_BITS): Define if we are not already defined or wordsize is 64.
+	(struct semid_ds): Update #if's to use __TIME_T_64_BITS.
+	Use __syscall_ulong_t instead of unsigned long.
+	* ports/sysdeps/unix/sysv/linux/generic/bits/shm.h
+	(__TIME_T_64_BITS): Define if we are not already defined or wordsize is 64.
+	(struct shmid_ds): Update #if's to use __TIME_T_64_BITS.
+	Use __syscall_ulong_t instead of unsigned long.
+	(struct shminfo): Use __syscall_ulong_t instead of unsigned long.
+	(struct shm_info): Likewise.
+
+2013-08-10  Andrew Pinski  <apinski@cavium.com>
+
+	* ports/sysdeps/unix/sysv/linux/aarch64/bits/typesizes.h (__RUSAGE_LONG): New define
+	for ILP32 BE.
+	* sysdeps/unix/sysv/linux/bits/resource.h (__RUSAGE_LONG): New define.
+	(struct rusage): Use __RUSAGE_LONG instead of unions.
+
+2013-08-04  Andrew Pinski  <apinski@cavium.com>
+
+	* sysdeps/aarch64/dl-tlsdesc.S (_dl_tlsdesc_dynamic): Fix for
+	ILP32.
+
+2013-07-30  Andrew Pinski  <apinski@cavium.com>
+
+	* ports/sysdeps/aarch64/dl-machine.h (_dl_start_user): Fix
+	envp location for ILP32.
+
+2013-07-25  Andrew Pinski  <apinski@cavium.com>
+
+	* ports/sysdeps/unix/sysv/linux/aarch64/sys/procfs.h (elf_greg_t): Define correctly
+	for ILP32.
+
+2013-07-23  Andrew Pinski  <apinski@cavium.com>
+
+	* ports/sysdeps/unix/sysv/linux/aarch64/bits/typesizes.h: New file.
+	Change clock_t/time_t to be 64bit.
+
+2013-07-22  Andrew Pinski  <apinski@cavium.com>
+
+	* ports/sysdeps/unix/sysv/linux/aarch64/Makefile (abi-ilp32-options):
+	Fix typo with undefining __LP64__.
+
+2013-07-16  Andrew Pinski  <apinski@cavium.com>
+
+	* ports/sysdeps/aarch64/dl-tlsdesc.S (_dl_tlsdesc_resolve_rela):
+	Fix for ILP32.
+	(_dl_tlsdesc_resolve_hold): Likewise.
+
+2013-07-16  Andrew Pinski  <apinski@cavium.com>
+
+	* ports/sysdeps/unix/sysv/linux/aarch64/ioctl.S: Move to ...
+	* ports/sysdeps/unix/sysv/linux/aarch64/lp64/ioctl.S: Here.
+
+2013-07-15  Andrew Pinski  <apinski@cavium.com>
+
+	* ports/sysdeps/aarch64/dl-trampoline.S (RELA_SIZE): New define.
+	(_dl_runtime_resolve): Support ILP32, using PTR_SIZE and PTR_REG in the correct places.
+	Also use RELA_SIZE<<3 instead of special #192.
+	(_dl_runtime_profile): Likewise.
+
+2013-07-13  Andrew Pinski  <apinski@cavium.com>
+
+	* ports/sysdeps/unix/sysv/linux/aarch64/sysdep.h (AGRIFY):
+	Fix pointer extending, use zero extend instead of sign extend.
+
+2013-07-06  Andrew Pinski  <apinski@cavium.com>
+
+	* ports/sysdeps/aarch64/dl-machine.h (elf_machine_load_address):
+	Fix ILP32 where we want to use 16bit relocs so it is resolved at
+	link time.
+
+2013-07-06  Andrew Pinski  <apinski@cavium.com>
+
+	* elf/elf.h (R_AARCH64_TLS_DTPMOD64): Rename based on the new ABI.
+	(R_AARCH64_TLS_DTPREL64): Likewise.
+	(R_AARCH64_TLS_TPREL64 ): Likewise.
+	* ports/sysdeps/aarch64/dl-machine.h (AARCH64_R): New define.
+	(elf_machine_runtime_setup): Use ElfW(Addr).
+	(elf_machine_type_class): Use reloc names based on AARCH64_R.
+	(elf_machine_rela): Likewise.  Also Use ELFW(R_TYPE).
+	(elf_machine_lazy_rel): Likewise.
+
+2013-07-06  Andrew Pinski  <apinski@cavium.com>
+
+	* ports/sysdeps/aarch64/bits/wordsize.h: New file.
+	* ports/sysdeps/unix/sysv/linux/aarch64/ilp32/Makefile: New file.
+	* ports/sysdeps/unix/sysv/linux/aarch64/lp64/Makefile: New file.
+	* ports/sysdeps/aarch64/ilp32/Implies: Add aarch64.
+	* ports/sysdeps/aarch64/lp64/Implies: Likewise.
+	* ports/sysdeps/unix/sysv/linux/aarch64/Makefile: Add abi variants.
+
+2013-07-06  Andrew Pinski  <apinski@cavium.com>
+
+	* config.h.in: Add HAVE_AARCH64_ILP32.
+
+2013-07-05  Andrew Pinski  <apinski@cavium.com>
+
+	* ports/sysdeps/aarch64/dl-machine.h (elf_machine_load_address): Support
+	ILP32 correctly.
+	(RTLD_START): Add ILP32 version.
+
+2013-07-05  Andrew Pinski  <apinski@cavium.com>
+
+	* ports/sysdeps/aarch64/bits/link.h (la_aarch64_gnu_pltenter):
+	Fix prototype for ILP32 support.
+	(la_aarch64_gnu_pltexit): Likewise.
+
+2013-07-05  Andrew Pinski  <apinski@cavium.com>
+
+	* ports/sysdeps/unix/sysv/linux/aarch64/Implies: Delete.
+	* ports/sysdeps/unix/sysv/linux/aarch64/ilp32/Implies-after: Delete.
+	* ports/sysdeps/unix/sysv/linux/aarch64/kernel-features.h (__ASSUME_MMAP2_SYSCALL):
+	Define.
+	(__ASSUME_STAT64_SYSCALL): Define.
+	(__ASSUME_FCNTL64): Define.
+	(__ASSUME_CLONE_THREAD_FLAGS): Define.
+	(__ASSUME_TGKILL): Define.
+	(__ASSUME_UTIMES): Define.
+	(__ASSUME_FADVISE64_64): Define.
+	* ports/sysdeps/unix/sysv/linux/aarch64/lp64/Implies-after: Delete.
+	* ports/sysdeps/unix/sysv/linux/aarch64/mmap.c: Delete.
+	* ports/sysdeps/unix/sysv/linux/aarch64/ilp32/Implies: New file.
+	* ports/sysdeps/unix/sysv/linux/aarch64/lp64/Implies: New file.
+
+2013-07-05  Andrew Pinski  <apinski@cavium.com>
+
+	* ports/sysdeps/aarch64/start.S: Add support
+	for ILP32 mode.
+	* ports/sysdeps/aarch64/sysdep.h (PTR_REG): New macro.
+	(PTR_SIZE): New macro.
+	(PTR_LOG_SIZE): New macro.
+	* ports/sysdeps/unix/sysv/linux/aarch64/sysdep.h (PTR_REG): Delete.
+	(PTR_SIZE): Remove.
+	(PTR_LOG_SIZE): Remove.
+
+2013-07-04  Andrew Pinski  <apinski@cavium.com>
+
+	* ports/sysdeps/aarch64/ilp32/Implies: New file.
+	* ports/sysdeps/aarch64/lp64/Implies: New file.
+	* ports/sysdeps/unix/sysv/linux/aarch64/ilp32/Implies-after: New file.
+	* ports/sysdeps/unix/sysv/linux/aarch64/lp64/Implies-after: New file.
+	* ports/sysdeps/aarch64/preconfigure: Set machine based on the options (ilp32 vs lp64).
+	* ports/sysdeps/aarch64/shlib-versions: Set ld.so based on HAVE_AARCH64_ILP32.
+	* ports/sysdeps/unix/sysv/linux/aarch64/configure: Regenerate.
+	* ports/sysdeps/unix/sysv/linux/aarch64/configure.in: Set slibdir and libdir based
+	on the machine (ilp32 vs lp64).
+	* ports/sysdeps/unix/sysv/linux/aarch64/ldconfig.h (SYSDEP_KNOWN_INTERPRETER_NAMES):
+	Add /lib/ld-linux32-aarch64.so.1 as the known interpreters.
+
+2013-07-01  Andrew Pinski  <apinski@cavium.com>
+
+	* ports/sysdeps/aarch64/crti.S: Include
+	sysdep.h for the macros.
+
+2013-06-25  Andrew Pinski  <apinski@cavium.com>
+
+	* sysdeps/unix/sysv/linux/aarch64/sysdep.h (PTR_REG): New macro.
+	(PTR_SIZE): New macro.
+	(PTR_LOG_SIZE): New macro.
+	* ports/sysdeps/unix/sysv/linux/aarch64/nptl/vfork.S: Use
+	PTR_REG for the subtraction.
+	* ports/sysdeps/unix/sysv/linux/aarch64/nptl/pt-vfork.S:
+	Likewise.
+	* ports/sysdeps/unix/sysv/linux/aarch64/getcontext.S:
+	Likewise.
+	* ports/sysdeps/aarch64/dl-tlsdesc.S: Start to port to ILP32.
+	* ports/sysdeps/aarch64/crti.S: Likewise.
+
+2013-06-25  Andrew Pinski  <apinski@cavium.com>
+
+	* ports/sysdeps/aarch64/start.S: Update comment about x0.
+	* ports/sysdeps/unix/sysv/linux/aarch64/sysdep.h: Add support
+	for ILP32.
+
+2013-06-20  Andrew Pinski  <apinski@cavium.com>
+
+	* elf (R_AARCH64_P32_ABS32): New macro.
+        (R_AARCH64_P32_COPY, R_AARCH64_P32_GLOB_DAT, R_AARCH64_P32_JUMP_SLOT): Likewise.
+        (R_AARCH64_P32_RELATIVE, R_AARCH64_P32_TLS_DTPMOD): Likewise.
+        (R_AARCH64_P32_TLS_DTPREL, R_AARCH64_P32_TLS_TPREL): Likewise.
+        (R_AARCH64_P32_TLSDESC): Likewise.
+
+2013-05-21  Andreas Schwab  <schwab@suse.de>
+
+	[BZ #15493]
+	* setjmp/Makefile (tests): Add tst-sigsetjmp.
+	* setjmp/tst-sigsetjmp.c: New test.

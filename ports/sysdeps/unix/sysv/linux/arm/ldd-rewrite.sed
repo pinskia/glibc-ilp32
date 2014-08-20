@@ -1,0 +1,1 @@
+s_^\(RTLDLIST=\)\(.*lib/\)\(\|sf\)\([^/]*\)\(-armhf\)\(.so\.[0-9.]*\)[ 	]*$_\1"\2\4\6 \2\4\5\6 \2ld-linux-aarch64.so.1 \2ld-linux-aarch64\_ilp32.so.1 \2ld-linux-aarch64\_be.so.1 \2ld-linux-aarch64\_be\_ilp32.so.1"_
